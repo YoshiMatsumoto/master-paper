@@ -19,6 +19,7 @@ n = 0
 for i, filename in enumerate(files):
     df = pd.read_csv(filename, names=["start_time", "duration", "X", "Y"])
     df["id"] = filename[-12:-4]
+    df["duration"] = df["duration"] + 4
     df = df[['id','start_time','duration','X', 'Y']]
     geometry = [Point(xy) for xy in zip(df.X, df.Y)]
     df_name = df.drop(["X", "Y"], axis= 1)
