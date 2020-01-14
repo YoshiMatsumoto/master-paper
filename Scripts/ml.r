@@ -1,21 +1,49 @@
 library(nnet)
 library(mlogit)
-# library(car)
-# vif(fit)
+library(car)
+library(ResourceSelection)
+library(nnet)
+library(epiDisplay)
+library(caret)
 
-df = read.csv("Scripts/logit_pm2_df_arr_original.csv")
+
+df = read.csv("Scripts/logit_pm2_df_22.csv")
 head(df)
 
-data = mlogit.data(df, shape = "wide", choice ="KEY_CODE")
+round(cor(df),3)
+
+write.csv(round(cor(df),3), "cor_exp.csv")
+
+data = mlogit.data(df, shape = "long", choice ="Go", alt.levels = c("diver", "guru", "shop", "night", "cul"))
 
 head(data,13)
-write.csv(data, "Scripts/mlogit_data.csv")
-result = mlogit(KEY_CODE~0|diver+GURU.m2+shop.m2+distance2|0, data)
 
-result = mlogit(KEY_CODE~0|diver+X+X.1+X.2|0,method = "nr", data)
-# result = nnet::multinom(KEY_CODE ~ diver+X+X.1+X.2, data=data)
-summary(result)
-# , method = "bfgs"
-# write.csv(result$coefficient, "result_coe_exp.csv")
-# write.csv(result$fitted.values, "result_fit_exp.csv")
-# write.csv(result$probabilities, "result_pro_exp.csv")
+# fit = glm(Go ~ diver+GURU.m2+shop.m2+night_amuse.m2+culture.m2+distance2, data=data, family=binomial)
+# vif(fit)
+# hoslem.test(fit$y, fitted(fit))
+# summary(fit)
+
+# logistic.display(fit, simplified=TRUE)
+
+fit = glm(Go ~ diver+GURU.m2+culture.m2+distance2, data=data, family=binomial)
+vif(fit)
+write.csv(vif(fit), "vif_exp.csv")
+hoslem.test(fit$y, fitted(fit))
+write.csv(hoslem.test(fit$y, fitted(fit)), "ht_exp.csv")
+summary(fit)
+write.csv(summary(fit)$coefficient, "coe_exp.csv")
+
+trainIndex <- createDataPartition(data, p = .67,
+                                  list = FALSE,
+                                  times = 1)
+
+Train <- data[ trainIndex,]
+Test  <- data[-trainIndex,]
+
+Test$model_prob <- predict(model, Test, type = "response")
+
+write.csv(fitted(fit), "fit.csv")
+
+or = logistic.display(fit, simplified=TRUE)
+# write.csv(or, "or_exp.csv")
+sum(fit$y-data$Go)
