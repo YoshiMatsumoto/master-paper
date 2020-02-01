@@ -1,0 +1,34 @@
+> summary(fit)
+
+Call:
+glm(formula = Go ~ guru + cul + dis, family = binomial, data = df)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.9972  -0.1303  -0.0748  -0.0428   4.0213  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  6.15142    0.36356  16.920  < 2e-16 ***
+guru         0.60576    0.03453  17.544  < 2e-16 ***
+cul         -0.21642    0.02962  -7.308 2.72e-13 ***
+dis         -1.99462    0.04333 -46.034  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 11379.9  on 62699  degrees of freedom
+Residual deviance:  6968.6  on 62696  degrees of freedom
+AIC: 6976.6
+
+Number of Fisher Scoring iterations: 8
+
+> vif(fit)
+    guru      cul      dis 
+1.023902 1.011096 1.019328
+
+            OR lower95ci upper95ci     Pr(>|Z|)
+guru 1.8326422 1.7127255 1.9609549 6.587062e-69
+cul  0.8053952 0.7599763 0.8535284 2.717939e-13
+dis  0.1360660 0.1249878 0.1481261 0.000000e+00
